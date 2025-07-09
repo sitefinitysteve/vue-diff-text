@@ -20,6 +20,12 @@ I needed a way to show text differences in my Vue 3 apps, so I built this wrappe
 npm install vue-diff-text
 ```
 
+## Demo
+
+![Vue Diff Text Demo](DemoPreview.png)
+
+*To run this demo locally: `git clone` this repo, `cd demo`, `npm install`, then `npm run dev`*
+
 ## The five components
 
 Each component uses a different diffing strategy depending on what level of detail you need:
