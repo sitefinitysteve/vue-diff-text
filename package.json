@@ -1,7 +1,7 @@
 {
   "name": "vue-diff-text",
   "private": false,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A simple Vue 3 component to display the difference between two blocks of text.",
   "type": "module",
   "main": "./dist/vue-text-diff.umd.cjs",
