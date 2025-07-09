@@ -1,168 +1,248 @@
 <template>
-  <div class="demo-container">
-    <h1>Vue Text Diff Demo</h1>
-    
-    <!-- Different diff types display with custom examples -->
-    <div class="diff-sections">
-      <div class="diff-section">
-        <h3>DiffChars (Character Level)</h3>
-        <p class="explanation">Best for: Typos, single character changes, minor text corrections</p>
-        <div class="text-examples">
-          <div class="text-example">
-            <strong>Original:</strong> {{ charsExample.oldText }}
-          </div>
-          <div class="text-example">
-            <strong>Modified:</strong> {{ charsExample.newText }}
-          </div>
-        </div>
-        <div class="diff-container">
-          <DiffChars :old-text="charsExample.oldText" :new-text="charsExample.newText" />
-        </div>
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div class="max-w-6xl mx-auto px-6 py-12">
+      <div class="text-center mb-16">
+        <h1 class="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+          Vue Text Diff Demo
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Compare text changes at different levels - from individual characters to entire sentences
+        </p>
       </div>
       
-      <div class="diff-section">
-        <h3>DiffWords (Word Level)</h3>
-        <p class="explanation">Best for: Word replacements, content changes, ignoring whitespace</p>
-        <div class="text-examples">
-          <div class="text-example">
-            <strong>Original:</strong> {{ wordsExample.oldText }}
+      <!-- Different diff types display with custom examples -->
+      <div class="space-y-12 mb-20">
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+          <div class="bg-gradient-to-r from-red-500 to-pink-500 px-8 py-6">
+            <h3 class="text-2xl font-bold text-white mb-2">DiffChars (Character Level)</h3>
+            <p class="text-red-100 text-lg">Best for: Typos, single character changes, minor text corrections</p>
           </div>
-          <div class="text-example">
-            <strong>Modified:</strong> {{ wordsExample.newText }}
+          <div class="p-8">
+            <div class="bg-gray-50 rounded-xl p-6 mb-6 border-l-4 border-red-500">
+              <div class="mb-4">
+                <span class="inline-block bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Original</span>
+                <div class="font-mono text-gray-800">{{ charsExample.oldText }}</div>
+              </div>
+              <div>
+                <span class="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Modified</span>
+                <div class="font-mono text-gray-800">{{ charsExample.newText }}</div>
+              </div>
+            </div>
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 font-mono text-base leading-relaxed border-2 border-gray-200">
+              <DiffChars :old-text="charsExample.oldText" :new-text="charsExample.newText" />
+            </div>
           </div>
-        </div>
-        <div class="diff-container">
-          <DiffWords :old-text="wordsExample.oldText" :new-text="wordsExample.newText" />
-        </div>
-      </div>
-      
-      <div class="diff-section">
-        <h3>DiffWordsWithSpace (Word Level with Space)</h3>
-        <p class="explanation">Best for: Word changes AND whitespace/formatting changes</p>
-        <div class="text-examples">
-          <div class="text-example">
-            <strong>Original:</strong> <span class="preserve-spaces">"{{ wordsWithSpaceExample.oldText }}"</span>
-          </div>
-          <div class="text-example">
-            <strong>Modified:</strong> <span class="preserve-spaces">"{{ wordsWithSpaceExample.newText }}"</span>
-          </div>
-        </div>
-        <div class="diff-container">
-          <DiffWordsWithSpace :old-text="wordsWithSpaceExample.oldText" :new-text="wordsWithSpaceExample.newText" />
-        </div>
-      </div>
-      
-      <div class="diff-section">
-        <h3>DiffLines (Line Level)</h3>
-        <p class="explanation">Best for: Line-by-line changes, code diffs, structured content</p>
-        <div class="text-examples">
-          <div class="text-example">
-            <strong>Original:</strong>
-            <pre class="code-example">{{ linesExample.oldText }}</pre>
-          </div>
-          <div class="text-example">
-            <strong>Modified:</strong>
-            <pre class="code-example">{{ linesExample.newText }}</pre>
-          </div>
-        </div>
-        <div class="diff-container">
-          <DiffLines :old-text="linesExample.oldText" :new-text="linesExample.newText" />
-        </div>
-      </div>
-      
-      <div class="diff-section">
-        <h3>DiffSentences (Sentence Level)</h3>
-        <p class="explanation">Best for: Paragraph changes, sentence restructuring, content editing</p>
-        <div class="text-examples">
-          <div class="text-example">
-            <strong>Original:</strong> {{ sentencesExample.oldText }}
-          </div>
-          <div class="text-example">
-            <strong>Modified:</strong> {{ sentencesExample.newText }}
-          </div>
-        </div>
-        <div class="diff-container">
-          <DiffSentences :old-text="sentencesExample.oldText" :new-text="sentencesExample.newText" />
-        </div>
-      </div>
-    </div>
-    
-    <!-- Interactive playground -->
-    <div class="playground-section">
-      <h2>Interactive Playground</h2>
-      <p>Edit the text below to see live differences with your preferred diff type:</p>
-      
-      <div class="playground-controls">
-        <label>
-          <strong>Choose Diff Type:</strong>
-          <select v-model="selectedDiffType">
-            <option value="chars">DiffChars</option>
-            <option value="words">DiffWords</option>
-            <option value="wordsWithSpace">DiffWordsWithSpace</option>
-            <option value="lines">DiffLines</option>
-            <option value="sentences">DiffSentences</option>
-          </select>
-        </label>
-      </div>
-      
-      <div class="text-panels">
-        <div class="text-panel">
-          <h3>Original Text</h3>
-          <textarea 
-            v-model="playgroundOldText" 
-            class="text-editor"
-            placeholder="Enter original text..."
-          ></textarea>
         </div>
         
-        <div class="text-panel">
-          <h3>New Text (Editable)</h3>
-          <textarea 
-            v-model="playgroundNewText" 
-            class="text-editor"
-            placeholder="Edit the text to see differences..."
-          ></textarea>
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+          <div class="bg-gradient-to-r from-orange-500 to-yellow-500 px-8 py-6">
+            <h3 class="text-2xl font-bold text-white mb-2">DiffWords (Word Level)</h3>
+            <p class="text-orange-100 text-lg">Best for: Word replacements, content changes, ignoring whitespace</p>
+          </div>
+          <div class="p-8">
+            <div class="bg-gray-50 rounded-xl p-6 mb-6 border-l-4 border-orange-500">
+              <div class="mb-4">
+                <span class="inline-block bg-orange-100 text-orange-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Original</span>
+                <div class="font-mono text-gray-800">{{ wordsExample.oldText }}</div>
+              </div>
+              <div>
+                <span class="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Modified</span>
+                <div class="font-mono text-gray-800">{{ wordsExample.newText }}</div>
+              </div>
+            </div>
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 font-mono text-base leading-relaxed border-2 border-gray-200">
+              <DiffWords :old-text="wordsExample.oldText" :new-text="wordsExample.newText" />
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+          <div class="bg-gradient-to-r from-green-500 to-teal-500 px-8 py-6">
+            <h3 class="text-2xl font-bold text-white mb-2">DiffWordsWithSpace (Word Level with Space)</h3>
+            <p class="text-green-100 text-lg">Best for: Word changes AND whitespace/formatting changes</p>
+          </div>
+          <div class="p-8">
+            <div class="bg-gray-50 rounded-xl p-6 mb-6 border-l-4 border-green-500">
+              <div class="mb-4">
+                <span class="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Original</span>
+                <div class="font-mono text-gray-800 whitespace-pre-wrap">"{{ wordsWithSpaceExample.oldText }}"</div>
+              </div>
+              <div>
+                <span class="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Modified</span>
+                <div class="font-mono text-gray-800 whitespace-pre-wrap">"{{ wordsWithSpaceExample.newText }}"</div>
+              </div>
+            </div>
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 font-mono text-base leading-relaxed border-2 border-gray-200">
+              <DiffWordsWithSpace :old-text="wordsWithSpaceExample.oldText" :new-text="wordsWithSpaceExample.newText" />
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+          <div class="bg-gradient-to-r from-blue-500 to-indigo-500 px-8 py-6">
+            <h3 class="text-2xl font-bold text-white mb-2">DiffLines (Line Level)</h3>
+            <p class="text-blue-100 text-lg">Best for: Document revisions, meeting notes, structured text changes</p>
+          </div>
+          <div class="p-8">
+            <div class="bg-gray-50 rounded-xl p-6 mb-6 border-l-4 border-blue-500">
+              <div class="mb-4">
+                <span class="inline-block bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Original</span>
+                <div class="bg-white rounded-lg p-4 text-sm border border-gray-200 whitespace-pre-line">{{ linesExample.oldText }}</div>
+              </div>
+              <div>
+                <span class="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Modified</span>
+                <div class="bg-white rounded-lg p-4 text-sm border border-gray-200 whitespace-pre-line">{{ linesExample.newText }}</div>
+              </div>
+            </div>
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 font-mono text-base leading-relaxed border-2 border-gray-200">
+              <DiffLines :old-text="linesExample.oldText" :new-text="linesExample.newText" />
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+          <div class="bg-gradient-to-r from-purple-500 to-pink-500 px-8 py-6">
+            <h3 class="text-2xl font-bold text-white mb-2">DiffSentences (Sentence Level)</h3>
+            <p class="text-purple-100 text-lg">Best for: Paragraph changes, sentence restructuring, content editing</p>
+          </div>
+          <div class="p-8">
+            <div class="bg-gray-50 rounded-xl p-6 mb-6 border-l-4 border-purple-500">
+              <div class="mb-4">
+                <span class="inline-block bg-purple-100 text-purple-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Original</span>
+                <div class="font-mono text-gray-800">{{ sentencesExample.oldText }}</div>
+              </div>
+              <div>
+                <span class="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Modified</span>
+                <div class="font-mono text-gray-800">{{ sentencesExample.newText }}</div>
+              </div>
+            </div>
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 font-mono text-base leading-relaxed border-2 border-gray-200">
+              <DiffSentences :old-text="sentencesExample.oldText" :new-text="sentencesExample.newText" />
+            </div>
+          </div>
         </div>
       </div>
       
-      <h3>Live Diff Result</h3>
-      <div class="diff-container">
-        <DiffChars v-if="selectedDiffType === 'chars'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
-        <DiffWords v-else-if="selectedDiffType === 'words'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
-        <DiffWordsWithSpace v-else-if="selectedDiffType === 'wordsWithSpace'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
-        <DiffLines v-else-if="selectedDiffType === 'lines'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
-        <DiffSentences v-else-if="selectedDiffType === 'sentences'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
-      </div>
-    </div>
-    
-    <!-- Options demo -->
-    <div class="options-section">
-      <h2>Options Demo</h2>
-      <p>Example with custom options (ignoreCase and ignoreWhitespace for DiffWords):</p>
-      <div class="options-controls">
-        <label>
-          <input type="checkbox" v-model="ignoreCase" />
-          Ignore Case
-        </label>
-        <label>
-          <input type="checkbox" v-model="ignoreWhitespace" />
-          Ignore Whitespace
-        </label>
-      </div>
-      <div class="text-examples">
-        <div class="text-example">
-          <strong>Original:</strong> "{{ caseSensitiveOldText }}"
+      <!-- Interactive playground -->
+      <div class="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden mb-20">
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-8">
+          <h2 class="text-3xl font-bold text-white mb-3">Interactive Playground</h2>
+          <p class="text-indigo-100 text-lg">Edit the text below to see live differences with your preferred diff type</p>
         </div>
-        <div class="text-example">
-          <strong>Modified:</strong> "{{ caseSensitiveNewText }}"
+        
+        <div class="p-8">
+          <div class="mb-8">
+            <label class="block text-lg font-semibold text-gray-700 mb-4">
+              Choose Diff Type:
+            </label>
+            <select v-model="selectedDiffType" class="w-full md:w-auto px-6 py-3 text-lg border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all bg-white shadow-sm">
+              <option value="chars">🔍 DiffChars</option>
+              <option value="words">📝 DiffWords</option>
+              <option value="wordsWithSpace">📄 DiffWordsWithSpace</option>
+              <option value="lines">📋 DiffLines</option>
+              <option value="sentences">📖 DiffSentences</option>
+            </select>
+          </div>
+          
+          <div class="grid md:grid-cols-2 gap-8 mb-8">
+            <div class="space-y-4">
+              <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+                Original Text
+              </h3>
+              <textarea 
+                v-model="playgroundOldText" 
+                class="w-full h-48 p-4 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all font-mono text-sm leading-relaxed resize-none shadow-sm"
+                placeholder="Enter original text..."
+              ></textarea>
+            </div>
+            
+            <div class="space-y-4">
+              <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                New Text (Editable)
+              </h3>
+              <textarea 
+                v-model="playgroundNewText" 
+                class="w-full h-48 p-4 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all font-mono text-sm leading-relaxed resize-none shadow-sm"
+                placeholder="Edit the text to see differences..."
+              ></textarea>
+            </div>
+          </div>
+          
+          <div class="space-y-4">
+            <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+              <span class="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></span>
+              Live Diff Result
+            </h3>
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 font-mono text-base leading-relaxed border-2 border-gray-200 min-h-[120px]">
+              <DiffChars v-if="selectedDiffType === 'chars'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
+              <DiffWords v-else-if="selectedDiffType === 'words'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
+              <DiffWordsWithSpace v-else-if="selectedDiffType === 'wordsWithSpace'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
+              <DiffLines v-else-if="selectedDiffType === 'lines'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
+              <DiffSentences v-else-if="selectedDiffType === 'sentences'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
+            </div>
+          </div>
         </div>
       </div>
-      <div class="diff-container">
-        <DiffWords 
-          :old-text="caseSensitiveOldText" 
-          :new-text="caseSensitiveNewText" 
-          :options="wordsOptions"
-        />
+      
+      <!-- Options demo -->
+      <div class="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+        <div class="bg-gradient-to-r from-teal-600 to-cyan-600 px-8 py-8">
+          <h2 class="text-3xl font-bold text-white mb-3">Options Demo</h2>
+          <p class="text-teal-100 text-lg">Example with custom options (ignoreCase and ignoreWhitespace for DiffWords)</p>
+        </div>
+        
+        <div class="p-8">
+          <div class="flex flex-wrap gap-6 mb-8">
+            <label class="flex items-center gap-3 cursor-pointer group">
+              <input 
+                type="checkbox" 
+                v-model="ignoreCase" 
+                class="w-5 h-5 text-teal-600 border-2 border-gray-300 rounded focus:ring-teal-500 focus:ring-2 transition-all"
+              />
+              <span class="text-lg font-medium text-gray-700 group-hover:text-teal-600 transition-colors">
+                Ignore Case
+              </span>
+            </label>
+            <label class="flex items-center gap-3 cursor-pointer group">
+              <input 
+                type="checkbox" 
+                v-model="ignoreWhitespace" 
+                class="w-5 h-5 text-teal-600 border-2 border-gray-300 rounded focus:ring-teal-500 focus:ring-2 transition-all"
+              />
+              <span class="text-lg font-medium text-gray-700 group-hover:text-teal-600 transition-colors">
+                Ignore Whitespace
+              </span>
+            </label>
+          </div>
+          
+          <div class="bg-gray-50 rounded-xl p-6 mb-6 border-l-4 border-teal-500">
+            <div class="mb-4">
+              <span class="inline-block bg-teal-100 text-teal-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Original</span>
+              <div class="font-mono text-gray-800">"{{ caseSensitiveOldText }}"</div>
+            </div>
+            <div>
+              <span class="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Modified</span>
+              <div class="font-mono text-gray-800">"{{ caseSensitiveNewText }}"</div>
+            </div>
+          </div>
+          
+          <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 font-mono text-base leading-relaxed border-2 border-gray-200">
+            <DiffWords 
+              :old-text="caseSensitiveOldText" 
+              :new-text="caseSensitiveNewText" 
+              :options="wordsOptions"
+            />
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer -->
+      <div class="text-center mt-16 py-8 border-t border-gray-200">
+        <p class="text-gray-600">
+          Built with ❤️ using Vue 3 and Tailwind CSS
+        </p>
       </div>
     </div>
   </div>
@@ -189,15 +269,23 @@ const wordsWithSpaceExample = {
 }
 
 const linesExample = {
-  oldText: `function greet(name) {
-  console.log("Hello, " + name);
-  return "Welcome";
-}`,
-  newText: `function greet(name, age) {
-  console.log(\`Hello, \${name}!\`);
-  console.log(\`You are \${age} years old.\`);
-  return "Welcome to our site";
-}`
+  oldText: `Meeting Notes - Project Alpha
+Date: March 15, 2024
+Attendees: Sarah, Mike, Jessica
+
+Action Items:
+- Review budget proposal
+- Schedule client meeting
+- Update project timeline`,
+  newText: `Meeting Notes - Project Alpha (URGENT)
+Date: March 15, 2024
+Attendees: Sarah, Mike, Jessica, David
+
+Action Items:
+- Review and approve budget proposal by Friday
+- Schedule client meeting for next week
+- Update project timeline with new milestones
+- Prepare presentation for stakeholders`
 }
 
 const sentencesExample = {
@@ -221,190 +309,3 @@ const wordsOptions = computed(() => ({
   ignoreWhitespace: ignoreWhitespace.value,
 }))
 </script>
-
-<style scoped>
-.demo-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-h1 {
-  text-align: center;
-  color: #2c3e50;
-  margin-bottom: 30px;
-}
-
-h2 {
-  color: #34495e;
-  margin: 40px 0 20px 0;
-  font-size: 24px;
-}
-
-h3 {
-  margin: 0 0 15px 0;
-  color: #34495e;
-  font-size: 18px;
-}
-
-.explanation {
-  color: #666;
-  font-style: italic;
-  margin-bottom: 15px;
-  font-size: 14px;
-}
-
-.text-examples {
-  margin-bottom: 15px;
-  background-color: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
-  padding: 15px;
-}
-
-.text-example {
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-
-.text-example:last-child {
-  margin-bottom: 0;
-}
-
-.preserve-spaces {
-  white-space: pre-wrap;
-  font-family: 'Monaco', 'Courier New', monospace;
-  background-color: #f1f3f4;
-  padding: 2px 4px;
-  border-radius: 3px;
-}
-
-.code-example {
-  background-color: #f1f3f4;
-  border: 1px solid #d0d7de;
-  border-radius: 4px;
-  padding: 10px;
-  font-family: 'Monaco', 'Courier New', monospace;
-  font-size: 12px;
-  white-space: pre;
-  margin: 5px 0;
-}
-
-.diff-sections {
-  margin-bottom: 40px;
-}
-
-.diff-section {
-  margin-bottom: 40px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.diff-section:last-child {
-  border-bottom: none;
-}
-
-.playground-section {
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 2px solid #e9ecef;
-}
-
-.playground-controls {
-  margin-bottom: 20px;
-}
-
-.playground-controls select {
-  margin-left: 10px;
-  padding: 5px 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.text-panels {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.text-panel {
-  flex: 1;
-  min-width: 0;
-}
-
-.text-editor {
-  width: 100%;
-  height: 200px;
-  padding: 15px;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  font-family: 'Monaco', 'Courier New', monospace;
-  font-size: 14px;
-  line-height: 1.6;
-  resize: vertical;
-  box-sizing: border-box;
-}
-
-.text-editor:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-.diff-container {
-  width: 100%;
-  background-color: #f8f9fa;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  padding: 20px;
-  font-family: 'Monaco', 'Courier New', monospace;
-  font-size: 14px;
-  line-height: 1.6;
-  min-height: 60px;
-}
-
-.options-section {
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 2px solid #e9ecef;
-}
-
-.options-controls {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.options-controls label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-}
-
-.options-controls input[type="checkbox"] {
-  transform: scale(1.2);
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .text-panels {
-    flex-direction: column;
-  }
-  
-  .demo-container {
-    padding: 15px;
-  }
-  
-  .options-controls {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .text-examples {
-    font-size: 12px;
-  }
-}
-</style>

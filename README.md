@@ -1,15 +1,18 @@
 # Vue Diff Text
 
-A comprehensive Vue 3 component library for displaying differences between two blocks of text using multiple diffing strategies. Perfect for showing inline text diffs with different granularity levels.
+I needed a way to show text differences in my Vue 3 apps, so I built this wrapper around the fantastic [jsdiff](https://github.com/kpdecker/jsdiff) library by [@kpdecker](https://github.com/kpdecker). It gives you five different ways to highlight changes between text blocks, from character-level precision to sentence-level overview.
 
-## Features
+**⚠️ Important:** This library is designed for **text and paragraph comparisons**, not code diffing. If you need to compare code with syntax highlighting, use [v-code-diff](https://github.com/Shimada666/v-code-diff) instead.
 
-- 🚀 Vue 3 Composition API
-- 📝 Multiple diff strategies: Characters, Words, Words with Space, Lines, and Sentences
-- 🎨 Customizable styling with CSS variables
-- 📦 TypeScript support
-- ⚡ Lightweight and fast
-- 🔧 Configurable options support for all diff types
+## What you get
+
+- Works with Vue 3 Composition API
+- Five different diff strategies: characters, words, words with spaces, lines, and sentences
+- Perfect for text, documents, and prose comparisons
+- Easy to customize with CSS variables
+- Full TypeScript support
+- Lightweight (just a thin wrapper around jsdiff)
+- Pass any options that jsdiff supports
 
 ## Installation
 
@@ -17,45 +20,32 @@ A comprehensive Vue 3 component library for displaying differences between two b
 npm install vue-diff-text
 ```
 
-## Components
+## The five components
 
-This library provides five different diff components, each using a different diffing strategy:
+Each component uses a different diffing strategy depending on what level of detail you need:
 
-### DiffChars
-Character-level diffing - highlights individual character differences.
+**DiffChars** - Shows every single character change. Great for catching typos or small edits.
 
-### DiffWords
-Word-level diffing - highlights whole word differences, ignoring whitespace.
+**DiffWords** - Highlights word-level changes but ignores whitespace. Perfect for most text editing scenarios.
 
-### DiffWordsWithSpace
-Word-level diffing - highlights whole word differences, including whitespace changes.
+**DiffWordsWithSpace** - Like DiffWords but also shows whitespace changes. Useful when formatting matters.
 
-### DiffLines
-Line-level diffing - highlights entire line differences.
+**DiffLines** - Shows entire line changes. Good for comparing plain text files or when you want a high-level overview.
 
-### DiffSentences
-Sentence-level diffing - highlights entire sentence differences.
+**DiffSentences** - Highlights sentence-level changes. Nice for prose and document editing.
 
-## Usage
+## How to use it
 
-### Basic Usage
+### Basic example
 
 ```vue
 <template>
   <div>
-    <!-- Character-level diff -->
+    <!-- Pick whichever diff type makes sense for your use case -->
     <DiffChars :old-text="oldText" :new-text="newText" />
-    
-    <!-- Word-level diff -->
     <DiffWords :old-text="oldText" :new-text="newText" />
-    
-    <!-- Word-level diff with space -->
     <DiffWordsWithSpace :old-text="oldText" :new-text="newText" />
-    
-    <!-- Line-level diff -->
     <DiffLines :old-text="oldText" :new-text="newText" />
-    
-    <!-- Sentence-level diff -->
     <DiffSentences :old-text="oldText" :new-text="newText" />
   </div>
 </template>
@@ -68,21 +58,21 @@ const newText = "Hello Vue world"
 </script>
 ```
 
-### Advanced Usage with Options
+### Passing options
 
-All components support passing options to the underlying `jsdiff` functions:
+Since this is just a wrapper around jsdiff, you can pass any options that jsdiff supports:
 
 ```vue
 <template>
   <div>
-    <!-- Word diff with case insensitive matching -->
+    <!-- Ignore case differences -->
     <DiffWords 
       :old-text="oldText" 
       :new-text="newText" 
       :options="{ ignoreCase: true }"
     />
     
-    <!-- Line diff ignoring whitespace -->
+    <!-- Ignore whitespace when comparing lines -->
     <DiffLines 
       :old-text="oldText" 
       :new-text="newText" 
@@ -99,16 +89,13 @@ const newText = "hello world"
 </script>
 ```
 
-### Backward Compatibility
+### Legacy support
 
-For backward compatibility, `TextDiff` is still available as an alias for `DiffWordsWithSpace`:
+If you were using the old `TextDiff` component, it still works (it's just an alias for `DiffWordsWithSpace`):
 
 ```vue
 <template>
-  <div>
-    <!-- This still works -->
-    <TextDiff :old-text="oldText" :new-text="newText" />
-  </div>
+  <TextDiff :old-text="oldText" :new-text="newText" />
 </template>
 
 <script setup>
@@ -121,53 +108,35 @@ const newText = "Hello Vue world"
 
 ## Props
 
-All components share the same props:
+All components take the same props:
 
-| Prop | Type | Required | Default | Description |
-|------|------|----------|---------|-------------|
-| `old-text` | `String` | ✅ | - | The original text to compare |
-| `new-text` | `String` | ✅ | - | The new text to compare against |
-| `options` | `Object` | ❌ | `{}` | Options passed to the underlying jsdiff function |
+- `old-text` (required) - The original text
+- `new-text` (required) - The new text to compare
+- `options` (optional) - Any options to pass to jsdiff
 
 ## Options
 
-Each component supports different options based on the underlying `jsdiff` function:
+The options you can pass depend on which diff type you're using. Here are the most common ones:
 
-### Common Options
+**For most components:**
+- `ignoreCase: true` - Ignore case differences
+- `ignoreWhitespace: true` - Ignore whitespace differences
 
-Most diff functions support these options:
+**For DiffLines:**
+- `newlineIsToken: true` - Treat newlines as separate tokens
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `ignoreCase` | `Boolean` | `false` | Ignore case differences |
-| `ignoreWhitespace` | `Boolean` | `false` | Ignore whitespace differences |
-
-### DiffWords / DiffWordsWithSpace Specific Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `ignoreCase` | `Boolean` | `false` | Ignore case differences |
-
-### DiffLines Specific Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `ignoreWhitespace` | `Boolean` | `false` | Ignore whitespace differences |
-| `newlineIsToken` | `Boolean` | `false` | Treat newlines as separate tokens |
-
-For a complete list of options, refer to the [jsdiff documentation](https://github.com/kpdecker/jsdiff#options).
+Check the [jsdiff docs](https://github.com/kpdecker/jsdiff#options) for the complete list of what each diff type supports.
 
 ## Styling
 
-The components offer two clean ways to customize their appearance:
+You can customize the look in two ways:
 
-### Method 1: CSS Custom Properties (Recommended)
+### CSS variables (easiest)
 
-Override colors globally using CSS variables:
+Just override the CSS variables to change colors:
 
 ```css
 :root {
-  /* Customize the diff colors */
   --text-diff-added-bg: #e6ffed;
   --text-diff-added-color: #1b7332;
   --text-diff-removed-bg: #ffe6e6;
@@ -176,198 +145,142 @@ Override colors globally using CSS variables:
 }
 ```
 
-### Method 2: CSS Class Override
+### Direct CSS classes
 
-Target the CSS classes directly for more complex styling:
+If you need more control, target these classes:
 
 ```css
-/* Override default styles */
 .diff-added {
-  background-color: #e6ffed !important;
-  color: #1b7332 !important;
+  background-color: #e6ffed;
+  color: #1b7332;
   font-weight: bold;
   border-radius: 3px;
   padding: 2px 4px;
 }
 
 .diff-removed {
-  background-color: #ffe6e6 !important;
-  color: #d73a49 !important;
+  background-color: #ffe6e6;
+  color: #d73a49;
   text-decoration: line-through;
   border-radius: 3px;
   padding: 2px 4px;
 }
-
-/* Or use higher specificity to avoid !important */
-.your-container .text-diff .diff-added {
-  background-color: #e6ffed;
-  color: #1b7332;
-}
 ```
 
-### Available CSS Classes
-
+The available classes are:
 - `.text-diff` - Main container
-- `.diff-added` - Added text segments
-- `.diff-removed` - Removed text segments
+- `.diff-added` - Added text
+- `.diff-removed` - Removed text
 
 ## Development
 
-### Prerequisites
-
-- Node.js 18+ 
-- npm or yarn
+Want to contribute or just mess around with the code? Here's how to get started.
 
 ### Setup
 
-1. Clone the repository:
+You'll need Node.js 18+ and npm (or yarn, whatever you prefer).
+
 ```bash
 git clone https://github.com/sitefinitysteve/vue-diff-text.git
 cd vue-diff-text
-```
-
-2. Install dependencies:
-```bash
 npm install
 ```
 
-### Development Workflow
+### Working on it
 
-#### Option 1: Live Development (Recommended)
+The easiest way to develop is to use the demo app with hot reload:
 
-For the fastest development experience with hot reload:
-
-1. Start the demo development server:
 ```bash
 cd demo
 npm run dev
 ```
 
-2. Open your browser to the displayed URL (usually http://localhost:5173)
+This spins up a dev server (usually at http://localhost:5173) where you can see all the components in action. The demo is set up with Vite aliases so it points directly to the source files - no build step needed.
 
-3. Edit the plugin source files in `src/components/`
+Just edit the files in `src/components/` and your changes will show up instantly.
 
-4. See changes instantly in the demo! ✨
+If you want to test the built version instead:
 
-The demo is configured with Vite aliases to point directly to the source files, so no build step is needed during development.
-
-#### Option 2: Build + Test Workflow
-
-If you prefer to test the built version:
-
-1. Build the plugin:
 ```bash
 npm run build
-```
-
-2. Start the demo:
-```bash
 cd demo
 npm run dev
 ```
 
-3. After making changes, rebuild and refresh the demo.
+### Building
 
-### Building for Production
-
-Build the plugin for distribution:
+When you're ready to build:
 
 ```bash
 npm run build
 ```
 
-This creates:
-- `dist/vue-text-diff.js` - ES module
-- `dist/vue-text-diff.umd.cjs` - UMD bundle
-- `dist/index.d.ts` - TypeScript declarations
-- `dist/style.css` - Component styles
+This creates the dist files (ES module, UMD bundle, TypeScript declarations, and CSS).
 
-### Testing the Plugin
+### Testing
 
-The `demo/` folder contains a complete Vue 3 application for testing all components:
+The demo folder has a complete Vue 3 app for testing. It lets you:
+- Edit text in real-time and see the diffs
+- Compare all five diff types side by side
+- Test different options
+- Try it with longer text blocks
 
-1. **Interactive demo** - Edit text in real-time
-2. **Multiple diff types** - Compare all diff strategies side by side
-3. **Options testing** - Test different configuration options
-4. **Paragraph comparison** - Test with longer text blocks
-
-To run the demo:
 ```bash
 cd demo
 npm install  # First time only
 npm run dev
 ```
 
-### Project Structure
+### Project layout
 
 ```
 vue-diff-text/
 ├── src/
-│   ├── components/
-│   │   ├── DiffChars.vue           # Character-level diff
-│   │   ├── DiffWords.vue           # Word-level diff
-│   │   ├── DiffWordsWithSpace.vue  # Word-level diff with space
-│   │   ├── DiffLines.vue           # Line-level diff
-│   │   └── DiffSentences.vue       # Sentence-level diff
-│   └── index.ts                    # Plugin entry point
-├── demo/                           # Test application
-│   ├── src/
-│   │   ├── App.vue                # Demo examples
-│   │   └── main.ts
-│   └── package.json
-├── dist/                           # Built files (generated)
-├── package.json
-└── README.md
+│   ├── components/          # The five diff components
+│   └── index.ts            # Main entry point
+├── demo/                   # Test app
+├── dist/                   # Built files
+└── package.json
 ```
 
-### Scripts
+Available scripts:
+- `npm run dev` - Start dev server
+- `npm run build` - Build for production
+- `npm run preview` - Preview built version
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start Vite dev server for the plugin |
-| `npm run build` | Build the plugin for production |
-| `npm run preview` | Preview the built plugin |
-
-### Demo Scripts
-
-Run these from the `demo/` directory:
-
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start demo development server |
-| `npm run build` | Build demo for production |
-| `npm run preview` | Preview built demo |
-
-## Migration from v0.0.1
-
-If you're upgrading from the original version:
-
-1. `TextDiff` is now `DiffWordsWithSpace` (but `TextDiff` still works for backward compatibility)
-2. All components now support an `options` prop
-3. You can now choose from 5 different diff strategies
+For the demo (run from `demo/`):
+- `npm run dev` - Start demo server
+- `npm run build` - Build demo
+- `npm run preview` - Preview built demo
 
 ## Dependencies
 
 - **vue** ^3.4.21 - Vue 3 framework
-- **diff** ^5.2.0 - Text diffing library
+- **diff** ^5.2.0 - The core diffing library by [@kpdecker](https://github.com/kpdecker) that does all the heavy lifting
 
 ## Contributing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+Found a bug or want to add a feature? Pull requests are welcome!
+
+1. Fork it
+2. Create your feature branch
 3. Make your changes
-4. Test in the demo application
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
+4. Test it in the demo app
+5. Commit and push
+6. Open a pull request
 
 ## License
 
 MIT © Steve McNiven-Scott
 
+## Thanks
+
+Huge thanks to [@kpdecker](https://github.com/kpdecker) for creating and maintaining [jsdiff](https://github.com/kpdecker/jsdiff). This library wouldn't exist without his excellent work on the underlying diffing algorithms.
+
 ## Links
 
-- [Repository](https://github.com/sitefinitysteve/vue-diff-text)
+- [GitHub repo](https://github.com/sitefinitysteve/vue-diff-text)
 - [Issues](https://github.com/sitefinitysteve/vue-diff-text/issues)
-- [Vue 3 Documentation](https://vuejs.org/)
-- [jsdiff Documentation](https://github.com/kpdecker/jsdiff)
+- [Vue 3 docs](https://vuejs.org/)
+- [jsdiff docs](https://github.com/kpdecker/jsdiff)
+- [v-code-diff](https://github.com/Shimada666/v-code-diff) - For code diffing with syntax highlighting
