@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { diffChars } from 'diff';
+import { diffWordsWithSpace } from 'diff';
 import type { Change } from 'diff';
 
 const props = defineProps({
@@ -29,11 +29,16 @@ const props = defineProps({
 });
 
 const diff = computed<Change[]>(() => {
-  return diffChars(props.oldText, props.newText);
+  return diffWordsWithSpace(props.oldText, props.newText);
 });
 </script>
 
 <style scoped>
+.text-diff {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 .diff-added {
   background-color: var(--text-diff-added-bg, #ddfbe6);
   color: var(--text-diff-added-color, #008000);
