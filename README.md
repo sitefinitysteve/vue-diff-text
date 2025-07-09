@@ -135,7 +135,7 @@ Check the [jsdiff docs](https://github.com/kpdecker/jsdiff#options) for the comp
 
 ## Styling
 
-You can customize the look in two ways:
+The CSS is automatically included when you import the components. You can customize the look in two ways:
 
 ### CSS variables (easiest)
 
@@ -153,10 +153,16 @@ Just override the CSS variables to change colors:
 
 ### Direct CSS classes
 
-If you need more control, target these classes:
+If you need more control, target these classes. Note that all styles are scoped under `.text-diff`:
 
 ```css
-.diff-added {
+.text-diff {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  /* Add your custom container styles here */
+}
+
+.text-diff .diff-added {
   background-color: #e6ffed;
   color: #1b7332;
   font-weight: bold;
@@ -164,7 +170,7 @@ If you need more control, target these classes:
   padding: 2px 4px;
 }
 
-.diff-removed {
+.text-diff .diff-removed {
   background-color: #ffe6e6;
   color: #d73a49;
   text-decoration: line-through;
@@ -174,9 +180,18 @@ If you need more control, target these classes:
 ```
 
 The available classes are:
-- `.text-diff` - Main container
-- `.diff-added` - Added text
-- `.diff-removed` - Removed text
+- `.text-diff` - Main container (each component has this)
+- `.text-diff .diff-added` - Added text spans
+- `.text-diff .diff-removed` - Removed text spans
+
+### Manual CSS import
+
+If you prefer to import the CSS manually instead of having it auto-included:
+
+```javascript
+import { DiffWords } from 'vue-diff-text'
+import 'vue-diff-text/dist/style.css'
+```
 
 ## Development
 

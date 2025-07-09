@@ -1,3 +1,5 @@
+import './style.css';
+
 import DiffChars from './components/DiffChars.vue';
 import DiffWords from './components/DiffWords.vue';
 import DiffWordsWithSpace from './components/DiffWordsWithSpace.vue';

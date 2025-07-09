@@ -35,22 +35,4 @@ const props = defineProps({
 const diff = computed<Change[]>(() => {
   return diffWordsWithSpace(props.oldText, props.newText, props.options);
 });
-</script>
-
-<style scoped>
-.text-diff {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
-
-.diff-added {
-  background-color: var(--text-diff-added-bg, #ddfbe6);
-  color: var(--text-diff-added-color, #008000);
-}
-
-.diff-removed {
-  background-color: var(--text-diff-removed-bg, #fce9e9);
-  color: var(--text-diff-removed-color, #c70000);
-  text-decoration: var(--text-diff-removed-decoration, line-through);
-}
-</style> 
+</script> 
