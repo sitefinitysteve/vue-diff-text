@@ -12,7 +12,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      'vue-text-diff': resolve(__dirname, '../src/index.ts'),
+      'vue-diff-text': resolve(__dirname, '../src/index.ts'),
     },
   },
 })

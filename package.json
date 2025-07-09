@@ -1,7 +1,7 @@
 {
-  "name": "vue-text-diff",
+  "name": "vue-diff-text",
   "private": false,
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A simple Vue 3 component to display the difference between two blocks of text.",
   "type": "module",
   "main": "./dist/vue-text-diff.umd.cjs",
@@ -46,10 +46,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sitefinitysteve/vue-text-diff.git"
+    "url": "git+https://github.com/sitefinitysteve/vue-diff-text.git"
   },
   "bugs": {
-    "url": "https://github.com/sitefinitysteve/vue-text-diff/issues"
+    "url": "https://github.com/sitefinitysteve/vue-diff-text/issues"
   },
-  "homepage": "https://github.com/sitefinitysteve/vue-text-diff#readme"
+  "homepage": "https://github.com/sitefinitysteve/vue-diff-text#readme"
 }

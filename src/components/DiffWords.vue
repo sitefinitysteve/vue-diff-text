@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { diffWordsWithSpace } from 'diff';
+import { diffWords } from 'diff';
 import type { Change } from 'diff';
 
 const props = defineProps({
@@ -26,10 +26,14 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  options: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
 const diff = computed<Change[]>(() => {
-  return diffWordsWithSpace(props.oldText, props.newText);
+  return diffWords(props.oldText, props.newText, props.options);
 });
 </script>
 
@@ -49,4 +53,4 @@ const diff = computed<Change[]>(() => {
   color: var(--text-diff-removed-color, #c70000);
   text-decoration: var(--text-diff-removed-decoration, line-through);
 }
-</style>
+</style> 
