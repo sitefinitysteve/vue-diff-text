@@ -1,5 +1,5 @@
 <template>
-  <div class="text-diff">
+  <div class="text-diff text-diff-sentences">
     <span
       v-for="(part, index) in diff"
       :key="index"
