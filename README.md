@@ -103,24 +103,6 @@ const newText = "hello world"
 </script>
 ```
 
-### Legacy support
-
-If you were using the old `TextDiff` component, it still works (it's just an alias for `DiffWordsWithSpace`):
-
-```vue
-<template>
-  <TextDiff :old-text="oldText" :new-text="newText" />
-</template>
-
-<script setup>
-import { TextDiff } from 'vue-diff-text'
-import 'vue-diff-text/dist/style.css'
-
-const oldText = "Hello world"
-const newText = "Hello Vue world"
-</script>
-```
-
 ## Props
 
 All components take the same props:
