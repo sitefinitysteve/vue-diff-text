@@ -42,6 +42,12 @@ Each component uses a different diffing strategy depending on what level of deta
 
 ## How to use it
 
+> **⚠️ Important:** You should import the CSS file for styling to work. It's not mandatory, you CAN implement the classes yourself.
+
+> ```javascript
+> import 'vue-diff-text/dist/style.css'
+> ```
+
 ### Basic example
 
 ```vue
@@ -58,6 +64,7 @@ Each component uses a different diffing strategy depending on what level of deta
 
 <script setup>
 import { DiffChars, DiffWords, DiffWordsWithSpace, DiffLines, DiffSentences } from 'vue-diff-text'
+import 'vue-diff-text/dist/style.css'
 
 const oldText = "Hello world"
 const newText = "Hello Vue world"
@@ -89,6 +96,7 @@ Since this is just a wrapper around jsdiff, you can pass any options that jsdiff
 
 <script setup>
 import { DiffWords, DiffLines } from 'vue-diff-text'
+import 'vue-diff-text/dist/style.css'
 
 const oldText = "Hello WORLD"
 const newText = "hello world"
@@ -106,6 +114,7 @@ If you were using the old `TextDiff` component, it still works (it's just an ali
 
 <script setup>
 import { TextDiff } from 'vue-diff-text'
+import 'vue-diff-text/dist/style.css'
 
 const oldText = "Hello world"
 const newText = "Hello Vue world"
@@ -135,7 +144,13 @@ Check the [jsdiff docs](https://github.com/kpdecker/jsdiff#options) for the comp
 
 ## Styling
 
-The CSS is automatically included when you import the components. You can customize the look in two ways:
+**You must import the CSS file for styling to work.** Add this import to your component or main.js:
+
+```javascript
+import 'vue-diff-text/dist/style.css'
+```
+
+You can then customize the look in two ways:
 
 ### CSS variables (easiest)
 
@@ -183,15 +198,6 @@ The available classes are:
 - `.text-diff` - Main container (each component has this)
 - `.text-diff .diff-added` - Added text spans
 - `.text-diff .diff-removed` - Removed text spans
-
-### Manual CSS import
-
-If you prefer to import the CSS manually instead of having it auto-included:
-
-```javascript
-import { DiffWords } from 'vue-diff-text'
-import 'vue-diff-text/dist/style.css'
-```
 
 ## Development
 
