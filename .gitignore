@@ -40,3 +40,4 @@ src/**/*.js.map
 
 # IDE files
 *.tsbuildinfo
+Thumbs.db
