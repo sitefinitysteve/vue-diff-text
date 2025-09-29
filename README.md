@@ -7,7 +7,7 @@ I needed a way to show text differences in my Vue 3 apps, so I built this wrappe
 ## What you get
 
 - Works with Vue 3 Composition API
-- Five different diff strategies: characters, words, words with spaces, lines, and sentences
+- Six different diff strategies: characters, words, words with spaces, lines, sentences, and HTML
 - Perfect for text, documents, and prose comparisons
 - Easy to customize with CSS variables
 - Full TypeScript support
@@ -26,7 +26,7 @@ npm install vue-diff-text
 
 *To run this demo locally: `git clone` this repo, `cd demo`, `npm install`, then `npm run dev`*
 
-## The five components
+## The six components
 
 Each component uses a different diffing strategy depending on what level of detail you need:
 
@@ -39,6 +39,8 @@ Each component uses a different diffing strategy depending on what level of deta
 **DiffLines** - Shows entire line changes. Good for comparing plain text files or when you want a high-level overview.
 
 **DiffSentences** - Highlights sentence-level changes. Nice for prose and document editing.
+
+**DiffHtml** - Compares HTML content and highlights markup differences. Perfect for rich text editing and HTML content changes.
 
 ## How to use it
 
@@ -59,15 +61,18 @@ Each component uses a different diffing strategy depending on what level of deta
     <DiffWordsWithSpace :old-text="oldText" :new-text="newText" />
     <DiffLines :old-text="oldText" :new-text="newText" />
     <DiffSentences :old-text="oldText" :new-text="newText" />
+    <DiffHtml :old-text="oldHtml" :new-text="newHtml" />
   </div>
 </template>
 
 <script setup>
-import { DiffChars, DiffWords, DiffWordsWithSpace, DiffLines, DiffSentences } from 'vue-diff-text'
+import { DiffChars, DiffWords, DiffWordsWithSpace, DiffLines, DiffSentences, DiffHtml } from 'vue-diff-text'
 import 'vue-diff-text/dist/style.css'
 
 const oldText = "Hello world"
 const newText = "Hello Vue world"
+const oldHtml = '<p>Welcome to our <strong>website</strong>!</p>'
+const newHtml = '<p>Welcome to our <strong>amazing website</strong>!</p>'
 </script>
 ```
 
@@ -181,6 +186,12 @@ The available classes are:
 - `.text-diff .diff-added` - Added text spans
 - `.text-diff .diff-removed` - Removed text spans
 
+**For DiffHtml component specifically:**
+- `.text-diff-html .diffins` - Inserted HTML content
+- `.text-diff-html .diffdel` - Deleted HTML content
+- `.text-diff-html del.diffmod` - Modified/deleted content
+- `.text-diff-html ins.diffmod` - Modified/inserted content
+
 ## Development
 
 Want to contribute or just mess around with the code? Here's how to get started.
@@ -266,6 +277,7 @@ For the demo (run from `demo/`):
 
 - **vue** ^3.4.21 - Vue 3 framework
 - **diff** ^5.2.0 - The core diffing library by [@kpdecker](https://github.com/kpdecker) that does all the heavy lifting
+- **diffblazer** ^1.0.0 - Fast HTML diffing library used by the DiffHtml component
 
 ## Contributing
 

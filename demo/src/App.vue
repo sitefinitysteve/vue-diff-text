@@ -121,8 +121,30 @@
             </div>
           </div>
         </div>
+
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+          <div class="bg-gradient-to-r from-rose-500 to-pink-600 px-8 py-6">
+            <h3 class="text-2xl font-bold text-white mb-2">DiffHtml (HTML Level)</h3>
+            <p class="text-rose-100 text-lg">Best for: HTML content changes, markup differences, rich text editing</p>
+          </div>
+          <div class="p-8">
+            <div class="bg-gray-50 rounded-xl p-6 mb-6 border-l-4 border-rose-500">
+              <div class="mb-4">
+                <span class="inline-block bg-rose-100 text-rose-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Original</span>
+                <div class="font-mono text-gray-800 text-sm">{{ htmlExample.oldText }}</div>
+              </div>
+              <div>
+                <span class="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Modified</span>
+                <div class="font-mono text-gray-800 text-sm">{{ htmlExample.newText }}</div>
+              </div>
+            </div>
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 text-base leading-relaxed border-2 border-gray-200">
+              <DiffHtml :old-text="htmlExample.oldText" :new-text="htmlExample.newText" />
+            </div>
+          </div>
+        </div>
       </div>
-      
+
       <!-- Interactive playground -->
       <div class="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden mb-20">
         <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-8">
@@ -141,6 +163,7 @@
               <option value="wordsWithSpace">📄 DiffWordsWithSpace</option>
               <option value="lines">📋 DiffLines</option>
               <option value="sentences">📖 DiffSentences</option>
+              <option value="html">🏷️ DiffHtml</option>
             </select>
           </div>
           
@@ -181,6 +204,7 @@
               <DiffWordsWithSpace v-else-if="selectedDiffType === 'wordsWithSpace'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
               <DiffLines v-else-if="selectedDiffType === 'lines'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
               <DiffSentences v-else-if="selectedDiffType === 'sentences'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
+              <DiffHtml v-else-if="selectedDiffType === 'html'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
             </div>
           </div>
         </div>
@@ -250,7 +274,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { DiffChars, DiffWords, DiffWordsWithSpace, DiffLines, DiffSentences } from 'vue-diff-text'
+import { DiffChars, DiffWords, DiffWordsWithSpace, DiffLines, DiffSentences, DiffHtml } from 'vue-diff-text'
 
 // Custom examples for each diff type
 const charsExample = {
@@ -291,6 +315,11 @@ Action Items:
 const sentencesExample = {
   oldText: "Vue.js is easy to learn. It has great documentation. Many developers love it.",
   newText: "Vue.js is incredibly easy to learn and has excellent documentation. Many developers absolutely love it because of its simplicity."
+}
+
+const htmlExample = {
+  oldText: '<p>Welcome to our <strong>website</strong>! We offer great <em>services</em>.</p>',
+  newText: '<p>Welcome to our <strong>amazing website</strong>! We offer the best <em>premium services</em> and <span class="highlight">support</span>.</p>'
 }
 
 // Interactive playground
