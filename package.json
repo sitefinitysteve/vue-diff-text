@@ -1,8 +1,8 @@
 {
   "name": "vue-diff-text",
   "private": false,
-  "version": "1.2.3",
-  "description": "A simple Vue 3 component to display the difference between two blocks of text.",
+  "version": "1.3.0",
+  "description": "Vue 3 components to display text and HTML differences with multiple diff strategies.",
   "main": "./dist/vue-diff-text.umd.js",
   "module": "./dist/vue-diff-text.mjs",
   "exports": {
@@ -43,6 +43,7 @@
     "vue3",
     "diff",
     "text-diff",
+    "html-diff",
     "component"
   ],
   "author": "Steve McNiven-Scott",
