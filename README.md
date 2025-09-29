@@ -186,11 +186,7 @@ The available classes are:
 - `.text-diff .diff-added` - Added text spans
 - `.text-diff .diff-removed` - Removed text spans
 
-**For DiffHtml component specifically:**
-- `.text-diff-html .diffins` - Inserted HTML content
-- `.text-diff-html .diffdel` - Deleted HTML content
-- `.text-diff-html del.diffmod` - Modified/deleted content
-- `.text-diff-html ins.diffmod` - Modified/inserted content
+**Note:** The DiffHtml component uses the same CSS classes (`.diff-added` and `.diff-removed`) as the other components for consistent styling.
 
 ## Development
 

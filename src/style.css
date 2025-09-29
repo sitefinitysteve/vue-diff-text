@@ -15,28 +15,4 @@
   text-decoration: var(--text-diff-removed-decoration, line-through);
 }
 
-/* DiffHtml specific styles for diffblazer output */
-.text-diff-html .diffins {
-  background-color: var(--text-diff-added-bg, #ddfbe6);
-  color: var(--text-diff-added-color, #008000);
-  text-decoration: none;
-}
-
-.text-diff-html .diffdel {
-  background-color: var(--text-diff-removed-bg, #fce9e9);
-  color: var(--text-diff-removed-color, #c70000);
-  text-decoration: var(--text-diff-removed-decoration, line-through);
-}
-
-/* Additional styles for diffblazer's diffmod class */
-.text-diff-html del.diffmod {
-  background-color: var(--text-diff-removed-bg, #fce9e9);
-  color: var(--text-diff-removed-color, #c70000);
-  text-decoration: var(--text-diff-removed-decoration, line-through);
-}
-
-.text-diff-html ins.diffmod {
-  background-color: var(--text-diff-added-bg, #ddfbe6);
-  color: var(--text-diff-added-color, #008000);
-  text-decoration: none;
-} 
+ 

@@ -22,6 +22,33 @@ const props = defineProps({
 });
 
 const diffResult = computed<string>(() => {
-  return diff(props.oldText, props.newText, props.options);
+  // Merge user options with custom markers to match other diff components
+  const customOptions = {
+    markers: {
+      insert: {
+        start: '<span class="diff-added">',
+        end: '</span>',
+      },
+      delete: {
+        start: '<span class="diff-removed">',
+        end: '</span>',
+      },
+      modify: {
+        start: '<span class="diff-added">',
+        end: '</span>',
+      },
+      replaceDelete: {
+        start: '<span class="diff-removed">',
+        end: '</span>',
+      },
+      replaceInsert: {
+        start: '<span class="diff-added">',
+        end: '</span>',
+      },
+    },
+    ...props.options
+  };
+
+  return diff(props.oldText, props.newText, customOptions);
 });
 </script>
