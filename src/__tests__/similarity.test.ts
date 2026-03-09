@@ -1,0 +1,61 @@
+import { describe, it, expect } from 'vitest'
+import { computeTextSimilarity } from '../utils/similarity'
+
+describe('computeTextSimilarity', () => {
+  it('returns 1 for identical texts', () => {
+    expect(computeTextSimilarity('hello world', 'hello world')).toBe(1)
+  })
+
+  it('returns 1 for both empty strings', () => {
+    expect(computeTextSimilarity('', '')).toBe(1)
+  })
+
+  it('returns 0 when old text is empty', () => {
+    expect(computeTextSimilarity('', 'hello')).toBe(0)
+  })
+
+  it('returns 0 when new text is empty', () => {
+    expect(computeTextSimilarity('hello', '')).toBe(0)
+  })
+
+  it('returns 0 for completely different texts', () => {
+    const similarity = computeTextSimilarity(
+      'alpha beta gamma delta',
+      'xylophone zebra quantum'
+    )
+    expect(similarity).toBeLessThan(0.1)
+  })
+
+  it('returns high similarity for minor word changes', () => {
+    const similarity = computeTextSimilarity(
+      'The quick brown fox jumps over the lazy dog',
+      'The quick brown fox leaps over the lazy dog'
+    )
+    expect(similarity).toBeGreaterThan(0.8)
+  })
+
+  it('returns low similarity for complete content replacement', () => {
+    const similarity = computeTextSimilarity(
+      'It is expressly agreed and understood by the parties that the Husband shall maintain his existing life insurance policy in the amount of $500,000 with the Wife named as the irrevocable beneficiary thereof.',
+      'Item 1: House\nItem 2: Car\nItem 3: Savings Account'
+    )
+    expect(similarity).toBeLessThan(0.3)
+  })
+
+  it('strips HTML tags before comparing', () => {
+    const similarity = computeTextSimilarity(
+      '<p>Hello <strong>world</strong></p>',
+      '<div>Hello <em>world</em></div>'
+    )
+    expect(similarity).toBe(1)
+  })
+
+  it('strips HTML but compares text content differences', () => {
+    const similarity = computeTextSimilarity(
+      '<p>Hello world</p>',
+      '<p>Goodbye world</p>'
+    )
+    expect(similarity).toBeGreaterThan(0.3)
+    expect(similarity).toBeLessThan(1)
+  })
+})

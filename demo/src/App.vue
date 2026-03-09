@@ -143,6 +143,40 @@
             </div>
           </div>
         </div>
+
+        <!-- DiffHtml with Similarity Threshold -->
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+          <div class="bg-gradient-to-r from-amber-500 to-orange-600 px-8 py-6">
+            <h3 class="text-2xl font-bold text-white mb-2">DiffHtml with Similarity Threshold</h3>
+            <p class="text-amber-100 text-lg">Best for: Complete content replacements where word-level diffs produce unreadable output</p>
+          </div>
+          <div class="p-8">
+            <div class="bg-gray-50 rounded-xl p-6 mb-6 border-l-4 border-amber-500">
+              <div class="mb-4">
+                <span class="inline-block bg-amber-100 text-amber-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Original</span>
+                <div class="font-mono text-gray-800 text-sm">{{ similarityExample.oldText }}</div>
+              </div>
+              <div>
+                <span class="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full mb-2">Modified</span>
+                <div class="font-mono text-gray-800 text-sm">{{ similarityExample.newText }}</div>
+              </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <h4 class="text-lg font-semibold text-gray-700 mb-3">Without threshold (garbled)</h4>
+                <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 text-base leading-relaxed border-2 border-gray-200">
+                  <DiffHtml :old-text="similarityExample.oldText" :new-text="similarityExample.newText" />
+                </div>
+              </div>
+              <div>
+                <h4 class="text-lg font-semibold text-gray-700 mb-3">With :similarity-threshold="0.3" (clean)</h4>
+                <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 text-base leading-relaxed border-2 border-gray-200">
+                  <DiffHtml :old-text="similarityExample.oldText" :new-text="similarityExample.newText" :similarity-threshold="0.3" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Interactive playground -->
@@ -167,6 +201,27 @@
             </select>
           </div>
           
+          <div v-if="selectedDiffType === 'html'" class="mb-8">
+            <label class="block text-lg font-semibold text-gray-700 mb-4">
+              Similarity Threshold: {{ playgroundThreshold === null ? 'Disabled' : playgroundThreshold.toFixed(2) }}
+            </label>
+            <div class="flex items-center gap-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" v-model="thresholdEnabled" class="w-5 h-5 text-indigo-600 border-2 border-gray-300 rounded" />
+                <span class="text-sm text-gray-600">Enable threshold</span>
+              </label>
+              <input
+                v-if="thresholdEnabled"
+                type="range"
+                v-model.number="thresholdValue"
+                min="0"
+                max="1"
+                step="0.05"
+                class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+              />
+            </div>
+          </div>
+
           <div class="grid md:grid-cols-2 gap-8 mb-8">
             <div class="space-y-4">
               <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -204,7 +259,7 @@
               <DiffWordsWithSpace v-else-if="selectedDiffType === 'wordsWithSpace'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
               <DiffLines v-else-if="selectedDiffType === 'lines'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
               <DiffSentences v-else-if="selectedDiffType === 'sentences'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
-              <DiffHtml v-else-if="selectedDiffType === 'html'" :old-text="playgroundOldText" :new-text="playgroundNewText" />
+              <DiffHtml v-else-if="selectedDiffType === 'html'" :old-text="playgroundOldText" :new-text="playgroundNewText" :similarity-threshold="playgroundThreshold" />
             </div>
           </div>
         </div>
@@ -322,10 +377,20 @@ const htmlExample = {
   newText: '<p>Welcome to our <strong>amazing website</strong>! We offer the best <em>premium services</em> and <span class="highlight">support</span>.</p>'
 }
 
+const similarityExample = {
+  oldText: 'It is expressly agreed and understood by the parties that the Husband shall maintain his existing life insurance policy in the amount of $500,000 with the Wife named as the irrevocable beneficiary thereof, and shall not cancel, reduce, or otherwise modify the said policy without the prior written consent of the Wife.',
+  newText: 'Item 1: House\nItem 2: Car\nItem 3: Savings Account'
+}
+
 // Interactive playground
 const selectedDiffType = ref('chars')
 const playgroundOldText = ref("The quick brown fox jumps over the lazy dog.")
 const playgroundNewText = ref("The quik brown fox jumped over the laxy dog!")
+
+// Similarity threshold controls
+const thresholdEnabled = ref(false)
+const thresholdValue = ref(0.3)
+const playgroundThreshold = computed(() => thresholdEnabled.value ? thresholdValue.value : null)
 
 // Options demo
 const caseSensitiveOldText = "Hello    WORLD!   How are you?"

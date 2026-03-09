@@ -40,7 +40,7 @@ Each component uses a different diffing strategy depending on what level of deta
 
 **DiffSentences** - Highlights sentence-level changes. Nice for prose and document editing.
 
-**DiffHtml** - Compares HTML content and highlights markup differences. Perfect for rich text editing and HTML content changes.
+**DiffHtml** - Compares HTML content and highlights markup differences. Perfect for rich text editing and HTML content changes. Supports a `similarity-threshold` prop to gracefully handle complete content replacements by showing old text as fully deleted and new text as fully added when texts are too dissimilar.
 
 ## How to use it
 
@@ -115,6 +115,7 @@ All components take the same props:
 - `old-text` (required) - The original text
 - `new-text` (required) - The new text to compare
 - `options` (optional) - Any options to pass to jsdiff
+- `similarity-threshold` (optional, DiffHtml only) - Number between 0 and 1. When set, if the text similarity falls below this threshold, the diff renders as a full replacement (all old text deleted, all new text added) instead of word-level diffing. Recommended value: `0.3`. Default: `null` (disabled).
 
 ## Options
 
@@ -128,6 +129,23 @@ The options you can pass depend on which diff type you're using. Here are the mo
 - `newlineIsToken: true` - Treat newlines as separate tokens
 
 Check the [jsdiff docs](https://github.com/kpdecker/jsdiff#options) for the complete list of what each diff type supports.
+
+### Handling large replacements (DiffHtml)
+
+When text is completely rewritten, word-level diffs can produce unreadable results by finding
+incidental word matches. The `similarity-threshold` prop fixes this:
+
+```vue
+<DiffHtml
+  :old-text="oldHtml"
+  :new-text="newHtml"
+  :similarity-threshold="0.3"
+/>
+```
+
+When set, DiffHtml computes text similarity. If below the threshold, it shows the old text as
+fully deleted and the new text as fully added — just like Google Docs or GitHub handles
+complete rewrites. The threshold is a number between 0-1 (0.3 = 30% similarity).
 
 ## Styling
 

@@ -1,10 +1,17 @@
 <template>
-  <div class="text-diff text-diff-html" v-html="diffResult"></div>
+  <div class="text-diff text-diff-html">
+    <template v-if="isFullReplacement">
+      <span class="diff-removed" v-html="oldText"></span>
+      <span class="diff-added" v-html="newText"></span>
+    </template>
+    <div v-else v-html="diffResult"></div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
 import { diff } from 'diffblazer';
+import { computeTextSimilarity } from '../utils/similarity';
 
 const props = defineProps({
   oldText: {
@@ -19,6 +26,18 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
+  similarityThreshold: {
+    type: Number,
+    default: null,
+  },
+});
+
+const isFullReplacement = computed<boolean>(() => {
+  if (props.similarityThreshold === null) return false;
+  if (!props.oldText || !props.newText) return false;
+
+  const similarity = computeTextSimilarity(props.oldText, props.newText);
+  return similarity < props.similarityThreshold;
 });
 
 const diffResult = computed<string>(() => {
