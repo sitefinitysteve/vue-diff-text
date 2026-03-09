@@ -58,4 +58,27 @@ describe('computeTextSimilarity', () => {
     expect(similarity).toBeGreaterThan(0.3)
     expect(similarity).toBeLessThan(1)
   })
+
+  it('returns 1 for whitespace-only strings after trimming', () => {
+    // Both become empty after trim, so returns 1
+    expect(computeTextSimilarity('   ', '   ')).toBe(1)
+  })
+
+  it('returns 0 for empty HTML tags vs real content', () => {
+    // <p></p> becomes empty after strip + trim
+    expect(computeTextSimilarity('<p></p>', 'hello')).toBe(0)
+  })
+
+  it('returns 0 for whitespace-only HTML vs real content', () => {
+    // <p>  </p> becomes empty after strip + trim
+    expect(computeTextSimilarity('<p>  </p>', 'hello')).toBe(0)
+  })
+
+  it('handles angle brackets in plain text gracefully', () => {
+    // The regex /<[^>]*>/g matches "< world >" as a tag-like pattern
+    // The result is high similarity but not necessarily exact, depending on
+    // how the regex interacts with surrounding whitespace
+    const similarity = computeTextSimilarity('hello < world > test', 'hello test')
+    expect(similarity).toBeGreaterThan(0.8)
+  })
 })

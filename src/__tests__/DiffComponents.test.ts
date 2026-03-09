@@ -119,10 +119,18 @@ describe('DiffWordsWithSpace', () => {
         newText: 'hello world',
       },
     })
-    // Should detect the whitespace change
-    const html = wrapper.html()
-    expect(html).toContain('diff-removed')
-    expect(html).toContain('diff-added')
+    const removed = wrapper.findAll('.diff-removed')
+    const added = wrapper.findAll('.diff-added')
+    expect(removed.length).toBeGreaterThan(0)
+    expect(added.length).toBeGreaterThan(0)
+  })
+
+  it('handles both texts empty', () => {
+    const wrapper = mount(DiffWordsWithSpace, {
+      props: { oldText: '', newText: '' },
+    })
+    expect(wrapper.findAll('.diff-added').length).toBe(0)
+    expect(wrapper.findAll('.diff-removed').length).toBe(0)
   })
 })
 
@@ -200,5 +208,13 @@ describe('DiffSentences', () => {
     const added = wrapper.findAll('.diff-added')
     expect(removed.length).toBeGreaterThan(0)
     expect(added.length).toBeGreaterThan(0)
+  })
+
+  it('handles both texts empty', () => {
+    const wrapper = mount(DiffSentences, {
+      props: { oldText: '', newText: '' },
+    })
+    expect(wrapper.findAll('.diff-added').length).toBe(0)
+    expect(wrapper.findAll('.diff-removed').length).toBe(0)
   })
 })
