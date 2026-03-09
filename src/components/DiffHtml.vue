@@ -1,10 +1,19 @@
 <template>
   <div class="text-diff text-diff-html">
     <template v-if="isFullReplacement">
-      <span class="diff-removed" v-html="oldText"></span>
-      <span class="diff-added" v-html="newText"></span>
+      <span
+        class="diff-removed"
+        v-html="oldText"
+      />
+      <span
+        class="diff-added"
+        v-html="newText"
+      />
     </template>
-    <div v-else v-html="diffResult"></div>
+    <div
+      v-else
+      v-html="diffResult"
+    />
   </div>
 </template>
 

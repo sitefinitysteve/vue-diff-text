@@ -8,7 +8,7 @@
         'diff-removed': part.removed,
       }"
       v-text="part.value"
-    ></span>
+    />
   </div>
 </template>
 
