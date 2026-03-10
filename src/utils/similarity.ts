@@ -1,4 +1,5 @@
 import { diffWords } from 'diff'
+import { normalizeQuotes } from './normalizeHtml'
 
 /**
  * Compute text similarity (0-1) based on diff-aligned word matching.
@@ -6,8 +7,8 @@ import { diffWords } from 'diff'
  */
 export function computeTextSimilarity(oldText: string, newText: string): number {
   const stripHtml = (text: string) => text.replace(/<[^>]*>/g, ' ').trim()
-  const cleanOld = stripHtml(oldText)
-  const cleanNew = stripHtml(newText)
+  const cleanOld = normalizeQuotes(stripHtml(oldText))
+  const cleanNew = normalizeQuotes(stripHtml(newText))
 
   if (!cleanOld && !cleanNew) return 1
   if (!cleanOld || !cleanNew) return 0

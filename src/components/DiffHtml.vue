@@ -21,6 +21,7 @@
 import { computed } from 'vue';
 import { diff } from 'diffblazer';
 import { computeTextSimilarity } from '../utils/similarity';
+import { normalizeQuotes, stripFormattingTags } from '../utils/normalizeHtml';
 
 const props = defineProps({
   oldText: {
@@ -39,7 +40,23 @@ const props = defineProps({
     type: Number,
     default: null,
   },
+  ignoreFormattingTags: {
+    type: Boolean,
+    default: false,
+  },
 });
+
+/**
+ * Normalize both inputs: always normalize quotes,
+ * and optionally strip inline formatting tags.
+ */
+function normalizeInput(text: string): string {
+  let result = normalizeQuotes(text);
+  if (props.ignoreFormattingTags) {
+    result = stripFormattingTags(result);
+  }
+  return result;
+}
 
 const isFullReplacement = computed<boolean>(() => {
   if (props.similarityThreshold === null) return false;
@@ -77,6 +94,6 @@ const diffResult = computed<string>(() => {
     ...props.options
   };
 
-  return diff(props.oldText, props.newText, customOptions);
+  return diff(normalizeInput(props.oldText), normalizeInput(props.newText), customOptions);
 });
 </script>

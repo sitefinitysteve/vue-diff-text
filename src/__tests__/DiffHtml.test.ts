@@ -169,4 +169,296 @@ describe('DiffHtml', () => {
     expect(wrapper.findAll('.diff-removed').length).toBe(0)
     expect(wrapper.findAll('.diff-added').length).toBe(0)
   })
+
+  // ─── Bug 1: Curly quotes vs straight quotes ────────────────────────
+
+  describe('Bug 1: Curly quotes vs straight quotes', () => {
+    it('1a: curly quotes in old, straight in new — no quote diff artifacts', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '<strong>\u201CClinic\u201D</strong> means a fertility clinic selected by the Intended Parent.',
+          newText: '<strong>"Clinic"</strong> means a fertility clinic selected by the Intended Parent and may be changed later.',
+        },
+      })
+      const html = wrapper.html()
+
+      // Quote differences should NOT produce removed spans
+      const removedSpans = wrapper.findAll('.diff-removed')
+      for (const span of removedSpans) {
+        expect(span.text()).not.toMatch(/[\u201C\u201D"]/)
+      }
+
+      // "and may be changed later" should be added
+      expect(html).toContain('diff-added')
+    })
+
+    it('1b: straight quotes in old, curly in new — no quote diff artifacts', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '<strong>"Clinic"</strong> means a fertility clinic selected by the Intended Parent.',
+          newText: '<strong>\u201CClinic\u201D</strong> means a fertility clinic selected by the Intended Parent and may be changed later.',
+        },
+      })
+      const html = wrapper.html()
+
+      // Quote differences should NOT produce removed spans
+      const removedSpans = wrapper.findAll('.diff-removed')
+      for (const span of removedSpans) {
+        expect(span.text()).not.toMatch(/[\u201C\u201D"]/)
+      }
+
+      // "and may be changed later" should be added
+      expect(html).toContain('diff-added')
+    })
+
+    it('1c: plain text curly quotes — no quote diff artifacts', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '\u201CClinic\u201D means selected by Intended Parent.',
+          newText: '"Clinic" means selected by Intended Parent and changed.',
+        },
+      })
+      const html = wrapper.html()
+
+      // "Clinic" should NOT be in a diff-removed span
+      const removedSpans = wrapper.findAll('.diff-removed')
+      for (const span of removedSpans) {
+        expect(span.text()).not.toContain('Clinic')
+      }
+
+      // "and changed" should be added
+      expect(html).toContain('diff-added')
+    })
+
+    it('1d: single curly quotes — no quote diff artifacts', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: 'The \u2018Clinic\u2019 is important.',
+          newText: "The 'Clinic' is important and revised.",
+        },
+      })
+
+      // "Clinic" should NOT be in any diff-removed span
+      const removedSpans = wrapper.findAll('.diff-removed')
+      for (const span of removedSpans) {
+        expect(span.text()).not.toContain('Clinic')
+      }
+
+      expect(wrapper.html()).toContain('diff-added')
+    })
+
+    it('1e: identical text except quotes — should produce no diff at all', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '\u201CClinic\u201D means selected.',
+          newText: '"Clinic" means selected.',
+        },
+      })
+      expect(wrapper.findAll('.diff-removed').length).toBe(0)
+      expect(wrapper.findAll('.diff-added').length).toBe(0)
+    })
+
+    it('1f: multiple curly quote pairs across text — no quote artifacts', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '\u201CClinic\u201D and \u201CDoctor\u201D are defined terms.',
+          newText: '"Clinic" and "Doctor" are defined terms.',
+        },
+      })
+      expect(wrapper.findAll('.diff-removed').length).toBe(0)
+      expect(wrapper.findAll('.diff-added').length).toBe(0)
+    })
+
+    it('1g: curly quotes with similarity threshold — does not cause false full replacement', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '\u201CClinic\u201D means a fertility clinic selected by the Intended Parent.',
+          newText: '"Clinic" means a fertility clinic selected by the Intended Parent.',
+          similarityThreshold: 0.8,
+        },
+      })
+      // Texts are essentially identical — should not trigger full replacement
+      const removedSpans = wrapper.findAll('.diff-removed')
+      const addedSpans = wrapper.findAll('.diff-added')
+      expect(removedSpans.length).toBe(0)
+      expect(addedSpans.length).toBe(0)
+    })
+  })
+
+  // ─── Bug 2: HTML tag wrapping mismatch ──────────────────────────────
+
+  describe('Bug 2: HTML tag wrapping mismatch', () => {
+    it('2a: old has <strong>, new does not — text shown as unchanged', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '<strong>"Clinic"</strong> means a fertility clinic selected by the Intended Parent.',
+          newText: '"Clinic" means a fertility clinic selected by the Intended Parent and may be changed later.',
+          ignoreFormattingTags: true,
+        },
+      })
+      const html = wrapper.html()
+
+      // "Clinic" should NOT be shown as removed
+      const removedSpans = wrapper.findAll('.diff-removed')
+      for (const span of removedSpans) {
+        expect(span.text()).not.toContain('Clinic')
+      }
+
+      // Should not have nested diff-removed inside diff-added
+      expect(html).not.toMatch(/<span class="diff-added">[^]*?<span class="diff-removed">/)
+
+      // "and may be changed later" should be added
+      expect(html).toContain('diff-added')
+    })
+
+    it('2b: old does not have <strong>, new has <strong> — text shown as unchanged', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '"Clinic" means a fertility clinic selected by the Intended Parent.',
+          newText: '<strong>"Clinic"</strong> means a fertility clinic selected by the Intended Parent and may be changed later.',
+          ignoreFormattingTags: true,
+        },
+      })
+      const html = wrapper.html()
+
+      // "Clinic" should NOT be shown as removed
+      const removedSpans = wrapper.findAll('.diff-removed')
+      for (const span of removedSpans) {
+        expect(span.text()).not.toContain('Clinic')
+      }
+
+      // Should not have nested diff-removed inside diff-added
+      expect(html).not.toMatch(/<span class="diff-added">[^]*?<span class="diff-removed">/)
+
+      expect(html).toContain('diff-added')
+    })
+
+    it('2c: both have <strong> — no spurious diffs (control case)', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '<strong>"Clinic"</strong> means a fertility clinic selected by the Intended Parent.',
+          newText: '<strong>"Clinic"</strong> means a fertility clinic selected by the Intended Parent and may be changed later.',
+        },
+      })
+      // Only "and may be changed later" should be added
+      const removedSpans = wrapper.findAll('.diff-removed')
+      expect(removedSpans.length).toBe(0)
+      expect(wrapper.html()).toContain('diff-added')
+    })
+
+    it('2d: old has <em>, new does not — text shown as unchanged', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '<em>Important</em> clause here.',
+          newText: 'Important clause here and more.',
+          ignoreFormattingTags: true,
+        },
+      })
+      const removedSpans = wrapper.findAll('.diff-removed')
+      for (const span of removedSpans) {
+        expect(span.text()).not.toContain('Important')
+      }
+      expect(wrapper.html()).toContain('diff-added')
+    })
+
+    it('2e: old has nested <strong><em>, new has neither — text shown as unchanged', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '<strong><em>"Clinic"</em></strong> means selected.',
+          newText: '"Clinic" means selected and revised.',
+          ignoreFormattingTags: true,
+        },
+      })
+      const removedSpans = wrapper.findAll('.diff-removed')
+      for (const span of removedSpans) {
+        expect(span.text()).not.toContain('Clinic')
+      }
+      expect(wrapper.html()).toContain('diff-added')
+    })
+
+    it('2f: ignoreFormattingTags defaults to false — tag changes cause spurious diff on unchanged text', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '<strong>"Clinic"</strong> means selected.',
+          newText: '"Clinic" means selected.',
+        },
+      })
+      // Without ignoreFormattingTags, the tag difference causes the BUG:
+      // "Clinic" text appears inside a diff span even though the text content is identical.
+      // This test documents the buggy behavior when the fix is NOT opted into.
+      const allDiffSpans = [
+        ...wrapper.findAll('.diff-added'),
+        ...wrapper.findAll('.diff-removed'),
+      ]
+      const clinicInDiffSpan = allDiffSpans.some(span => span.text().includes('Clinic'))
+      expect(clinicInDiffSpan).toBe(true)
+    })
+
+    it('2g: ignoreFormattingTags with identical text — no diffs', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '<strong>Hello</strong> world',
+          newText: 'Hello world',
+          ignoreFormattingTags: true,
+        },
+      })
+      expect(wrapper.findAll('.diff-removed').length).toBe(0)
+      expect(wrapper.findAll('.diff-added').length).toBe(0)
+    })
+  })
+
+  // ─── Combined: Bugs 1 + 2 together ─────────────────────────────────
+
+  describe('Combined: Bugs 1 + 2 (curly quotes AND tag mismatch)', () => {
+    it('curly quotes in old with <strong>, straight quotes in new without <strong>', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '<strong>\u201CClinic\u201D</strong> means a fertility clinic selected by the Intended Parent.',
+          newText: '"Clinic" means a fertility clinic selected by the Intended Parent and may be changed later.',
+          ignoreFormattingTags: true,
+        },
+      })
+      const html = wrapper.html()
+
+      // No spurious diffs from quotes or tags
+      const removedSpans = wrapper.findAll('.diff-removed')
+      for (const span of removedSpans) {
+        expect(span.text()).not.toContain('Clinic')
+        expect(span.text()).not.toMatch(/[\u201C\u201D"]/)
+      }
+
+      // Only actual text change should be shown
+      expect(html).toContain('diff-added')
+    })
+
+    it('straight quotes in old without tags, curly quotes in new with <strong>', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '"Clinic" means a fertility clinic selected by the Intended Parent.',
+          newText: '<strong>\u201CClinic\u201D</strong> means a fertility clinic selected by the Intended Parent and may be changed later.',
+          ignoreFormattingTags: true,
+        },
+      })
+      const html = wrapper.html()
+
+      const removedSpans = wrapper.findAll('.diff-removed')
+      for (const span of removedSpans) {
+        expect(span.text()).not.toContain('Clinic')
+      }
+
+      expect(html).toContain('diff-added')
+    })
+
+    it('identical content with different quotes AND different tags — no diff at all', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '<strong>\u201CClinic\u201D</strong> means selected.',
+          newText: '"Clinic" means selected.',
+          ignoreFormattingTags: true,
+        },
+      })
+      expect(wrapper.findAll('.diff-removed').length).toBe(0)
+      expect(wrapper.findAll('.diff-added').length).toBe(0)
+    })
+  })
 })

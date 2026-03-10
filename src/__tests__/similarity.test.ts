@@ -81,4 +81,30 @@ describe('computeTextSimilarity', () => {
     const similarity = computeTextSimilarity('hello < world > test', 'hello test')
     expect(similarity).toBeGreaterThan(0.8)
   })
+
+  // ─── Quote normalization in similarity ──────────────────────────────
+
+  it('treats curly double quotes as identical to straight double quotes', () => {
+    const similarity = computeTextSimilarity(
+      '\u201CClinic\u201D means selected.',
+      '"Clinic" means selected.'
+    )
+    expect(similarity).toBe(1)
+  })
+
+  it('treats curly single quotes as identical to straight single quotes', () => {
+    const similarity = computeTextSimilarity(
+      'don\u2019t stop',
+      "don't stop"
+    )
+    expect(similarity).toBe(1)
+  })
+
+  it('does not penalize similarity for quote style differences', () => {
+    const similarity = computeTextSimilarity(
+      '\u201CClinic\u201D means a fertility clinic selected by the Intended Parent.',
+      '"Clinic" means a fertility clinic selected by the Intended Parent.'
+    )
+    expect(similarity).toBe(1)
+  })
 })
