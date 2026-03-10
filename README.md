@@ -2,6 +2,8 @@
 
 I needed a way to show text differences in my Vue 3 apps, so I built this wrapper around the fantastic [jsdiff](https://github.com/kpdecker/jsdiff) library by [@kpdecker](https://github.com/kpdecker). It gives you five different ways to highlight changes between text blocks, from character-level precision to sentence-level overview.
 
+**Looking for PHP?** Check out the sister package [php-diff-text](https://github.com/sitefinitysteve/php-diff-text) — a 1:1 PHP port with the same diffing strategies.
+
 **⚠️ Important:** This library is designed for **text and paragraph comparisons**, not code diffing. If you need to compare code with syntax highlighting, use [v-code-diff](https://github.com/Shimada666/v-code-diff) instead.
 
 ## What you get
@@ -318,4 +320,5 @@ Huge thanks to [@kpdecker](https://github.com/kpdecker) for creating and maintai
 - [Issues](https://github.com/sitefinitysteve/vue-diff-text/issues)
 - [Vue 3 docs](https://vuejs.org/)
 - [jsdiff docs](https://github.com/kpdecker/jsdiff)
+- [php-diff-text](https://github.com/sitefinitysteve/php-diff-text) - PHP sister package (1:1 port)
 - [v-code-diff](https://github.com/Shimada666/v-code-diff) - For code diffing with syntax highlighting
