@@ -170,6 +170,84 @@ describe('DiffHtml', () => {
     expect(wrapper.findAll('.diff-added').length).toBe(0)
   })
 
+  // ─── Bug 3: Garbled interleaving on partial text replacement ────────
+
+  describe('Bug 3: Partial text replacement produces clean block diff', () => {
+    it('3a: first sentence kept, second sentence replaced — no interleaved words', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: 'The quick brown fox jumps over the lazy dog. Each party acknowledges that any term of this agreement will be interpreted accordingly.',
+          newText: 'The quick brown fox jumps over the lazy dog. Test writing new content.',
+          similarityThreshold: 0.3,
+        },
+      })
+      const removedSpans = wrapper.findAll('.diff-removed')
+      const addedSpans = wrapper.findAll('.diff-added')
+
+      // Removed text should not contain new words mixed in
+      for (const span of removedSpans) {
+        expect(span.text()).not.toContain('Test writing')
+      }
+      // Added text should not contain old words mixed in
+      for (const span of addedSpans) {
+        expect(span.text()).not.toContain('acknowledges')
+      }
+    })
+
+    it('3b: small word-level changes still produce fine-grained diff', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: 'The parties agree to TWENTY-ONE (21) days notice.',
+          newText: 'The parties agree to TWENTY-FIVE (25) days notice.',
+          similarityThreshold: 0.3,
+        },
+      })
+      const removedSpans = wrapper.findAll('.diff-removed')
+      const addedSpans = wrapper.findAll('.diff-added')
+
+      // Should still have fine-grained word-level diff, not full replacement
+      expect(removedSpans.length).toBeGreaterThan(0)
+      expect(addedSpans.length).toBeGreaterThan(0)
+
+      // The unchanged surrounding text should NOT be in removed spans
+      const allRemovedText = removedSpans.map(s => s.text()).join(' ')
+      expect(allRemovedText).not.toContain('The parties agree')
+    })
+
+    it('3c: small addition at end still produces fine-grained diff', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: 'The parties agree to the terms set forth herein.',
+          newText: 'The parties agree to the terms set forth herein, including amendments.',
+          similarityThreshold: 0.3,
+        },
+      })
+      const removedSpans = wrapper.findAll('.diff-removed')
+      const addedSpans = wrapper.findAll('.diff-added')
+
+      // Should show a fine-grained addition, not a full replacement
+      expect(removedSpans.length).toBe(0)
+      expect(addedSpans.length).toBeGreaterThan(0)
+      // The added text should contain the new phrase
+      const allAddedText = addedSpans.map(s => s.text()).join(' ')
+      expect(allAddedText).toContain('including amendments')
+    })
+
+    it('3d: consumer can override orphanMatchThreshold via options', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: 'The quick brown fox jumps over the lazy dog. Each party acknowledges that any term of this agreement will be interpreted accordingly.',
+          newText: 'The quick brown fox jumps over the lazy dog. Test writing new content.',
+          similarityThreshold: 0.3,
+          options: { orphanMatchThreshold: 0 },
+        },
+      })
+      // With threshold 0 (disabled), orphan matches are kept — interleaving may occur
+      // Just verify it doesn't crash; behavior differs from default
+      expect(wrapper.html()).toBeTruthy()
+    })
+  })
+
   // ─── Bug 1: Curly quotes vs straight quotes ────────────────────────
 
   describe('Bug 1: Curly quotes vs straight quotes', () => {

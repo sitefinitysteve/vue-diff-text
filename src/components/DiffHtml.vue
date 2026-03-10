@@ -69,6 +69,7 @@ const isFullReplacement = computed<boolean>(() => {
 const diffResult = computed<string>(() => {
   // Merge user options with custom markers to match other diff components
   const customOptions = {
+    orphanMatchThreshold: 0.3,
     markers: {
       insert: {
         start: '<span class="diff-added">',
