@@ -1,7 +1,7 @@
 {
   "name": "vue-diff-text",
   "private": false,
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Vue 3 components to display text and HTML differences with multiple diff strategies.",
   "main": "./dist/vue-diff-text.umd.js",
   "module": "./dist/vue-diff-text.mjs",
