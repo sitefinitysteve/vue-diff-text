@@ -233,6 +233,56 @@ describe('DiffHtml', () => {
       expect(allAddedText).toContain('including amendments')
     })
 
+    it('3e: real-world HTML with <p> tags — second sentence replaced, no garbled interleaving', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '<p>Each Party acknowledges that at all times during the Term of this Agreement the Surrogate will retain bodily autonomy and the right to obtain a second medical opinion with respect to any proposed test, procedure, treatment, or medication which will be covered by the Intended Parents as an Additional Expense Amounts. Each Party acknowledges that any term of this Agreement where the Surrogate gives her consent with respect to any proposed test, procedure, treatment, or medication will be interpreted by the Parties to mean that the Surrogate intends to give her consent at the relevant time if such consent is fully informed and voluntary.</p>\n',
+          newText: '<p>Each Party acknowledges that at all times during the Term of this Agreement the Surrogate will retain bodily autonomy and the right to obtain a second medical opinion with respect to any proposed test, procedure, treatment, or medication which will be covered by the Intended Parents as an Additional Expense Amounts. Test writing new content.</p>\n',
+        },
+      })
+      const removedSpans = wrapper.findAll('.diff-removed')
+      const addedSpans = wrapper.findAll('.diff-added')
+
+      // The diff should NOT interleave words from old and new text.
+      for (const span of removedSpans) {
+        expect(span.text()).not.toContain('Test')
+        expect(span.text()).not.toContain('writing')
+        expect(span.text()).not.toContain('content')
+      }
+      for (const span of addedSpans) {
+        expect(span.text()).not.toContain('interpreted')
+        expect(span.text()).not.toContain('voluntary')
+        expect(span.text()).not.toContain('Surrogate gives')
+      }
+    })
+
+    it('3f: real-world HTML with <strong> tags — no garbled interleaving or nested diff spans', () => {
+      const wrapper = mount(DiffHtml, {
+        props: {
+          oldText: '<p>The Surrogate has offered to act as an altruistic surrogate and to gestate the Embryo created with the Ova and the Sperm until the Birth of the Child. The Surrogate is over the age of TWENTY-ONE (21) years and is in a relationship of permanence with the Spouse. The Surrogate has 3 dependant child or children ("<strong>Surrogate\'s Dependant(s)</strong>").</p>\n',
+          newText: '<p>The Surrogate has offered to act as an altruistic surrogate and to gestate the Embryo created with the Ova and the Sperm until the Birth of the Child. Test writing new content.</p>\n',
+        },
+      })
+      const html = wrapper.html()
+      const removedSpans = wrapper.findAll('.diff-removed')
+      const addedSpans = wrapper.findAll('.diff-added')
+
+      // No garbled interleaving — new words should NOT appear in removed spans
+      for (const span of removedSpans) {
+        expect(span.text()).not.toContain('Test')
+        expect(span.text()).not.toContain('writing')
+        expect(span.text()).not.toContain('content')
+      }
+      // Old words should NOT appear in added spans
+      for (const span of addedSpans) {
+        expect(span.text()).not.toContain('TWENTY-ONE')
+        expect(span.text()).not.toContain('permanence')
+        expect(span.text()).not.toContain('Spouse')
+      }
+      // No nested diff-removed inside diff-added
+      expect(html).not.toMatch(/<span class="diff-added">[^]*?<span class="diff-removed">/)
+    })
+
     it('3d: consumer can override orphanMatchThreshold via options', () => {
       const wrapper = mount(DiffHtml, {
         props: {
@@ -454,16 +504,16 @@ describe('DiffHtml', () => {
       expect(wrapper.html()).toContain('diff-added')
     })
 
-    it('2f: ignoreFormattingTags defaults to false — tag changes cause spurious diff on unchanged text', () => {
+    it('2f: ignoreFormattingTags=false — tag changes cause spurious diff on unchanged text', () => {
       const wrapper = mount(DiffHtml, {
         props: {
           oldText: '<strong>"Clinic"</strong> means selected.',
           newText: '"Clinic" means selected.',
+          ignoreFormattingTags: false,
         },
       })
-      // Without ignoreFormattingTags, the tag difference causes the BUG:
+      // With ignoreFormattingTags explicitly false, the tag difference causes the BUG:
       // "Clinic" text appears inside a diff span even though the text content is identical.
-      // This test documents the buggy behavior when the fix is NOT opted into.
       const allDiffSpans = [
         ...wrapper.findAll('.diff-added'),
         ...wrapper.findAll('.diff-removed'),

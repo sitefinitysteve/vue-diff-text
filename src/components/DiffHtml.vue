@@ -42,7 +42,7 @@ const props = defineProps({
   },
   ignoreFormattingTags: {
     type: Boolean,
-    default: false,
+    default: true,
   },
 });
 
